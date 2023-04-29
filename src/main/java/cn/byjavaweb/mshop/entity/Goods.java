@@ -7,13 +7,21 @@ import lombok.Data;
 @TableName("goods")
 public class Goods {
     private Integer id;
+
     private String name;
+
     private String cover;
+
     private String image1;
+
     private String image2;
+
     private Integer price;
+
     private String intro;
+
     private Integer stock;
+
     private Integer typeId;
 
     public Integer getId() {

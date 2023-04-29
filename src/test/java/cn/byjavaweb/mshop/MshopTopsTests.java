@@ -1,19 +1,20 @@
 package cn.byjavaweb.mshop;
 
-import cn.byjavaweb.mshop.entity.Goods;
-import cn.byjavaweb.mshop.mapper.GoodsMapper;
+import cn.byjavaweb.mshop.entity.Tops;
+import cn.byjavaweb.mshop.mapper.TopsMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class MshopGoodsTests {
+public class MshopTopsTests {
     @Autowired
-    private GoodsMapper goodsMapper;
+    private TopsMapper topsMapper;
 
     @Test
     void testSelectById(){
-        Goods goods = goodsMapper.selectById(1);
-        System.out.println(goods);
+        Tops tops = topsMapper.selectById(1);
+        System.out.println(tops);
     }
+
 }
