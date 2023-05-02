@@ -1,36 +1,44 @@
 package cn.byjavaweb.mshop.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import cn.byjavaweb.mshop.entity.Users;
+import cn.byjavaweb.mshop.service.UserService;
+import cn.byjavaweb.mshop.utils.ResponseUtil;
+import cn.byjavaweb.mshop.utils.SafeUtil;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@RestController()
+@RestController
+@CrossOrigin
 @RequestMapping("/user")
 public class UserController {
 
-//    /**
-//     * 顾客管理
-//     *
-//     * @return
-//     */
-//    @RequestMapping("/userList")
-//    public String userList(HttpServletRequest request,
-//                           @RequestParam(required=false, defaultValue="1") int page) {
-//        request.setAttribute("flag", 2);
-//        request.setAttribute("userList", userService.getList(page, rows));
-//        request.setAttribute("pageTool", PageUtil.getPageTool(request, userService.getTotal(), page, rows));
-//        return "/admin/user_list.jsp";
-//    }
-//
-//    /**
-//     * 顾客添加
-//     *
-//     * @return
-//     */
-//    @RequestMapping("/userAdd")
-//    public String userAdd(HttpServletRequest request) {
-//        request.setAttribute("flag", 2);
-//        return "/admin/user_add.jsp";
-//    }
+    private final UserService userService;
+
+    public UserController(UserService userService){
+        this.userService = userService;
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody Users users) {
+        Users users1 = userService.checkUser(users);
+        if(users1==null){
+            userService.add(users);
+            return new ResponseUtil().response("注册成功!", HttpStatus.OK);
+        }else{
+            return new ResponseUtil().response("该用户名已存在!", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody Users users) {
+        Users users1 = userService.checkUser(users);
+        if(users1==null||!users1.getPassword().equals(SafeUtil.encode(users.getPassword()))){
+            return new ResponseUtil().response("账号或密码错误!", HttpStatus.UNAUTHORIZED);
+        }else {
+            return new ResponseUtil().response("登录成功!", HttpStatus.OK);
+        }
+    }
 //
 //    /**
 //     * 顾客添加
