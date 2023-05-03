@@ -1,12 +1,21 @@
 package cn.byjavaweb.mshop.controller;
 
+import cn.byjavaweb.mshop.dto.GoodListDto;
+import cn.byjavaweb.mshop.entity.Goods;
+import cn.byjavaweb.mshop.service.GoodService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import static cn.byjavaweb.mshop.utils.ResponseUtil.*;
 
 @RestController()
 @RequestMapping("/good")
 public class GoodController {
-
+    private static final int RowsInPage = 10;
+    @Autowired
+    private GoodService goodService;
 //    /**
 //     * 产品列表
 //     *
@@ -22,7 +31,24 @@ public class GoodController {
 //        request.setAttribute("pageTool", PageUtil.getPageTool(request, goodService.getTotal(status), page, rows));
 //        return "/admin/good_list.jsp";
 //    }
-//
+    
+    /**
+     *
+     * @param status ?
+     * @param page ?
+     * @return type GoodListDto = { flag:number, page: number, status: number, goodList: Goods[]}
+     */
+    @RequestMapping("/goodlist")
+    public ResponseEntity<Goods[]> goodList(
+            @RequestParam(required = false, defaultValue = "0") byte status,
+            @RequestParam(required = false, defaultValue = "1") int page
+    ) {
+//        new GoodListDto(
+//                3, page, status,
+//                goodService.getList()
+//                )
+        return null;
+    }
 //    /**
 //     * 产品添加
 //     *
