@@ -33,7 +33,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody Users users) {
         Users users1 = userService.checkUser(users);
-        if(users1==null||!users1.getPassword().equals(SafeUtil.encode(users.getPassword()))){
+        if(users1==null||!users1.getPassword().equals(users.getPassword())){
             return new ResponseUtil().response("账号或密码错误!", HttpStatus.UNAUTHORIZED);
         }else {
             return new ResponseUtil().response("登录成功!", HttpStatus.OK);

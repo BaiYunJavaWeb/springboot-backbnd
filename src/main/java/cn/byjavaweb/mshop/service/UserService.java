@@ -15,7 +15,6 @@ public class UserService {
     }
 
     public boolean add(Users users){
-        users.setPassword(SafeUtil.encode(users.getPassword()));
         return usersMapper.insert(users)>0;
     }
 
