@@ -1,27 +1,33 @@
 package cn.byjavaweb.mshop.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import cn.byjavaweb.mshop.service.GoodService;
+import cn.byjavaweb.mshop.utils.ResponseUtil;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@RestController()
+@RestController
+@CrossOrigin
 @RequestMapping("/good")
 public class GoodController {
+
+    private static final int rows = 10; // 默认每页数量
+
+    private final GoodService goodService;
+
+    public GoodController(GoodService goodService){
+        this.goodService = goodService;
+    }
 
 //    /**
 //     * 产品列表
 //     *
 //     * @return
 //     */
-//    @RequestMapping("/goodList")
-//    public String goodList(@RequestParam(required=false, defaultValue="0")byte status, HttpServletRequest request,
-//                           @RequestParam(required=false, defaultValue="1") int page) {
-//        request.setAttribute("flag", 3);
-//        request.setAttribute("page", page);
-//        request.setAttribute("status", status);
-//        request.setAttribute("goodList", goodService.getList(status, page, rows));
-//        request.setAttribute("pageTool", PageUtil.getPageTool(request, goodService.getTotal(status), page, rows));
-//        return "/admin/good_list.jsp";
-//    }
+    @GetMapping("/goodList/{id}/{page}")
+    public ResponseEntity<String> goodList(@PathVariable(name = "id") int id, @PathVariable(name = "page") int page) {
+        return new ResponseUtil().response(goodService.getList(id, page, rows), HttpStatus.OK);
+    }
 //
 //    /**
 //     * 产品添加

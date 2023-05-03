@@ -3,11 +3,9 @@ package cn.byjavaweb.mshop.service;
 import cn.byjavaweb.mshop.entity.Goods;
 import cn.byjavaweb.mshop.entity.Tops;
 import cn.byjavaweb.mshop.mapper.TopsMapper;
-import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Service
