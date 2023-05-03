@@ -2,7 +2,6 @@ package cn.byjavaweb.mshop.service;
 
 import cn.byjavaweb.mshop.entity.Admins;
 import cn.byjavaweb.mshop.mapper.AdminsMapper;
-import cn.byjavaweb.mshop.utils.SafeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -28,7 +27,7 @@ public class AdminService {
         QueryWrapper<Admins> wrapper = new QueryWrapper<>();
         wrapper.eq("username",admins.getUsername()).select("old_password");
         Admins adminsOne = adminsMapper.selectOne(wrapper);
-        return adminsOne != null && adminsOne.getOldPassword().equals(admins.getOldPassword());
+        return adminsOne != null && adminsOne.getOldPassword().equals(admins.getPassword());
     }
 
     /**
@@ -79,8 +78,8 @@ public class AdminService {
      * @return Integer affect rows
      */
     public Integer add(Admins admins){
-        admins.setPassword(SafeUtil.encode(admins.getPassword()));
-        admins.setOldPassword(SafeUtil.encode(admins.getPassword()));
+        admins.setPassword(admins.getPassword());
+        admins.setOldPassword(admins.getPassword());
         return adminsMapper.insert(admins);
     }
 
@@ -90,8 +89,8 @@ public class AdminService {
      * @return boolean 是否更新成功
      */
     public boolean update(Admins admins){
-        admins.setPassword(SafeUtil.encode(admins.getPassword()));
-        admins.setOldPassword(SafeUtil.encode(admins.getPassword()));
+        admins.setPassword(admins.getPassword());
+        admins.setOldPassword(admins.getPassword());
         return adminsMapper.updateById(admins) > 0;
     }
 
