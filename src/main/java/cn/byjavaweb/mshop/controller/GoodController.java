@@ -1,141 +1,112 @@
 package cn.byjavaweb.mshop.controller;
 
-import cn.byjavaweb.mshop.dto.GoodListDto;
+import cn.byjavaweb.mshop.dto.good.GoodAddDto;
+import cn.byjavaweb.mshop.dto.good.GoodListDto;
+import cn.byjavaweb.mshop.dto.BoolSucceedDto;
 import cn.byjavaweb.mshop.entity.Goods;
 import cn.byjavaweb.mshop.service.GoodService;
-import org.springframework.beans.factory.annotation.Autowired;
+import cn.byjavaweb.mshop.utils.ResponseUtil;
+import cn.byjavaweb.mshop.utils.UploadUtil;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import static cn.byjavaweb.mshop.utils.ResponseUtil.*;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import static java.util.Objects.*;
 
 @RestController()
 @RequestMapping("/good")
 public class GoodController {
     private static final int RowsInPage = 10;
-    @Autowired
-    private GoodService goodService;
-//    /**
-//     * 产品列表
-//     *
-//     * @return
-//     */
-//    @RequestMapping("/goodList")
-//    public String goodList(@RequestParam(required=false, defaultValue="0")byte status, HttpServletRequest request,
-//                           @RequestParam(required=false, defaultValue="1") int page) {
-//        request.setAttribute("flag", 3);
-//        request.setAttribute("page", page);
-//        request.setAttribute("status", status);
-//        request.setAttribute("goodList", goodService.getList(status, page, rows));
-//        request.setAttribute("pageTool", PageUtil.getPageTool(request, goodService.getTotal(status), page, rows));
-//        return "/admin/good_list.jsp";
-//    }
+    private final GoodService goodService;
+    
+    public GoodController(GoodService goodService) {
+        this.goodService = goodService;
+    }
     
     /**
      *
-     * @param status ?
-     * @param page ?
+     * @param status 0查询全部，其它查询推荐列表
+     * @param page 一页10条
      * @return type GoodListDto = { flag:number, page: number, status: number, goodList: Goods[]}
      */
-    @RequestMapping("/goodlist")
-    public ResponseEntity<Goods[]> goodList(
+    @RequestMapping("/goodList")
+    public ResponseEntity<String> goodList(
             @RequestParam(required = false, defaultValue = "0") byte status,
             @RequestParam(required = false, defaultValue = "1") int page
     ) {
-//        new GoodListDto(
-//                3, page, status,
-//                goodService.getList()
-//                )
-        return null;
+        return ResponseUtil.makeResponse(
+            new GoodListDto(
+                    3, page, status,
+                    goodService.getList(status, page, RowsInPage)
+                    ),
+            HttpStatus.OK);
     }
-//    /**
-//     * 产品添加
-//     *
-//     * @return
-//     */
-//    @RequestMapping("/goodAdd")
-//    public String goodAdd(HttpServletRequest request) {
-//        request.setAttribute("flag", 3);
-//        request.setAttribute("typeList", typeService.getList());
-//        return "/admin/good_add.jsp";
-//    }
-//
-//    /**
-//     * 产品添加
-//     *
-//     * @return
-//     * @throws Exception
-//     */
-//    @RequestMapping("/goodSave")
-//    public String goodSave(String name, int price, String intro, int stock, int typeId,
-//                           MultipartFile cover, MultipartFile image1, MultipartFile image2,
-//                           @RequestParam(required=false, defaultValue="1") int page) throws Exception {
-//        Goods good = new Goods();
-//        good.setName(name);
-//        good.setPrice(price);
-//        good.setIntro(intro);
-//        good.setStock(stock);
-//        good.setTypeId(typeId);
-//        good.setCover(UploadUtil.fileUpload(cover));
-//        good.setImage1(UploadUtil.fileUpload(image1));
-//        good.setImage2(UploadUtil.fileUpload(image2));
-//        goodService.add(good);
-//        return "redirect:goodList?flag=3&page="+page;
-//    }
-//
-//    /**
-//     * 产品更新
-//     *
-//     * @return
-//     */
-//    @RequestMapping("/goodEdit")
-//    public String goodEdit(int id, HttpServletRequest request) {
-//        request.setAttribute("flag", 3);
-//        request.setAttribute("typeList", typeService.getList());
-//        request.setAttribute("good", goodService.get(id));
-//        return "/admin/good_edit.jsp";
-//    }
-//
-//    /**
-//     * 产品更新
-//     *
-//     * @return
-//     * @throws Exception
-//     */
-//    @RequestMapping("/goodUpdate")
-//    public String goodUpdate(int id, String name, int price, String intro, int stock, int typeId,
-//                             MultipartFile cover, MultipartFile image1, MultipartFile image2,
-//                             @RequestParam(required=false, defaultValue="1") int page) throws Exception {
-//        Goods good = goodService.get(id);
-//        good.setName(name);
-//        good.setPrice(price);
-//        good.setIntro(intro);
-//        good.setStock(stock);
-//        good.setTypeId(typeId);
-//        if (Objects.nonNull(cover) && !cover.isEmpty()) {
-//            good.setCover(UploadUtil.fileUpload(cover));
-//        }
-//        if (Objects.nonNull(image1) && !image1.isEmpty()) {
-//            good.setImage1(UploadUtil.fileUpload(image1));
-//        }
-//        if (Objects.nonNull(image2) && !image2.isEmpty()) {
-//            good.setImage2(UploadUtil.fileUpload(image2));
-//        }
-//        goodService.update(good);
-//        return "redirect:goodList?flag=3&page="+page;
-//    }
+    
+    /**
+     *
+     * @return type GoodAddResult = { id: number }
+     */
+    @RequestMapping(value = "/goodSave", method = RequestMethod.POST)
+    public ResponseEntity<String> goodAddRecord(
+            String name, int price, String intro, int stock, int typeId,
+            MultipartFile cover, MultipartFile image1, MultipartFile image2
+    ) throws Exception {
+        Goods good = new Goods();
+        setGoodBasics(name, price, intro, stock, typeId, good);
+    
+        good.setCover(UploadUtil.fileUpload(cover));
+        good.setImage1(UploadUtil.fileUpload(image1));
+        good.setImage2(UploadUtil.fileUpload(image2));
+    
+        return ResponseUtil.makeResponse(new GoodAddDto(goodService.add(good)), HttpStatus.OK);
+    }
+    
+    private void setGoodBasics(String name, int price, String intro, int stock, int typeId, Goods good) {
+        good.setTypeId(typeId);
+        good.setIntro(intro);
+        good.setName(name);
+        good.setPrice(price);
+        good.setStock(stock);
+    }
+
+    /**
+     * 产品更新
+     *
+     * @return type BoolSucceedDto = { success: boolean }
+     */
+    @RequestMapping("/goodUpdate")
+    public ResponseEntity<String> goodUpdate(int id, String name, int price, String intro, int stock, int typeId,
+                             MultipartFile cover, MultipartFile image1, MultipartFile image2,
+                             @RequestParam(required=false, defaultValue="1") int page) throws Exception {
+        Goods good = goodService.get(id);
+        setGoodBasics(name, price, intro, stock, typeId, good);
+    
+        if (nonNull(cover) && !cover.isEmpty()) {
+            good.setCover(UploadUtil.fileUpload(cover));
+        }
+        if (nonNull(image1) && !image1.isEmpty()) {
+            good.setImage1(UploadUtil.fileUpload(image1));
+        }
+        if (nonNull(image2) && !image2.isEmpty()) {
+            good.setImage2(UploadUtil.fileUpload(image2));
+        }
+        return ResponseUtil.makeResponse(
+                new BoolSucceedDto(goodService.update(good)),
+                HttpStatus.OK);
+    }
 //
 //    /**
 //     * 产品删除
 //     *
-//     * @return
+//     * @return type BoolSucceedDto = { success: boolean }
 //     */
-//    @RequestMapping("/goodDelete")
-//    public String goodDelete(int id,
-//                             @RequestParam(required=false, defaultValue="1") int page) {
-//        goodService.delete(id);
-//        return "redirect:goodList?flag=3&page="+page;
-//    }
+    @RequestMapping("/goodDelete")
+    public ResponseEntity<String> goodDelete(int id,
+                             @RequestParam(required=false, defaultValue="1") int page) {
+        return ResponseUtil.makeResponse(
+                new BoolSucceedDto(goodService.delete(id)),
+                HttpStatus.OK);
+    }
 
 }

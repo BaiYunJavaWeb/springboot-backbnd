@@ -1,4 +1,4 @@
-package cn.byjavaweb.mshop.dto;
+package cn.byjavaweb.mshop.dto.good;
 
 import cn.byjavaweb.mshop.entity.Goods;
 
@@ -7,7 +7,7 @@ public record GoodListDto(
         int flag,
         int page,
         byte status,
-        Goods[] goodList
+        java.util.List<Goods> goodList
 ) {
 
 }
