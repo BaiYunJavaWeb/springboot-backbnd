@@ -1,10 +1,14 @@
 package cn.byjavaweb.mshop.controller;
 
+import cn.byjavaweb.mshop.entity.Tops;
 import cn.byjavaweb.mshop.service.TopService;
 import cn.byjavaweb.mshop.utils.ResponseUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -22,27 +26,44 @@ public class TopController {
         return new ResponseUtil().response(topService.getList(id, page, rows), HttpStatus.OK);
     }
 
-//    /**
-//     * 添加推荐
-//     * @return
-//     */
-//    @RequestMapping("/topSave")
-//    public @ResponseBody String topSave(Tops tops,
-//                                        @RequestParam(required=false, defaultValue="0")byte status,
-//                                        @RequestParam(required=false, defaultValue="1") int page) {
-//        int id = topService.add(tops);
-//        return id > 0 ? "ok" : null;
-//    }
-//
-//    /**
-//     * 删除推荐
-//     * @return
-//     */
-//    @RequestMapping("/topDelete")
-//    public @ResponseBody String topDelete(Tops tops,
-//                                          @RequestParam(required=false, defaultValue="0")byte status,
-//                                          @RequestParam(required=false, defaultValue="1") int page) {
-//        boolean flag = topService.delete(tops);
-//        return flag ? "ok" : null;
-//    }
+    /**
+     * 添加推荐
+     */
+    @PostMapping("/topSave")
+    public ResponseEntity<String> topSave(@RequestBody Tops tops) {
+        Map<String, Object> msgMap = new HashMap<>();
+        msgMap.put("success",topService.add(tops));
+        return new ResponseUtil().response(msgMap,HttpStatus.OK);
+    }
+
+    /**
+     * 删除推荐
+     */
+    @DeleteMapping("/topDelete")
+    public ResponseEntity<String> topDelete(@RequestBody Tops tops) {
+        Map<String, Object> msgMap = new HashMap<>();
+        msgMap.put("success",topService.delete(tops));
+        return new ResponseUtil().response(msgMap,HttpStatus.OK);
+    }
+
+
+    /**
+     * 添加推荐
+     */
+    @PostMapping("/hotSave")
+    public ResponseEntity<String> hotSave(@RequestBody Tops tops) {
+        Map<String, Object> msgMap = new HashMap<>();
+        msgMap.put("success",topService.add(tops));
+        return new ResponseUtil().response(msgMap,HttpStatus.OK);
+    }
+
+    /**
+     * 删除推荐
+     */
+    @DeleteMapping("/hotDelete")
+    public ResponseEntity<String> hotDelete(@RequestBody Tops tops) {
+        Map<String, Object> msgMap = new HashMap<>();
+        msgMap.put("success",topService.delete(tops));
+        return new ResponseUtil().response(msgMap,HttpStatus.OK);
+    }
 }

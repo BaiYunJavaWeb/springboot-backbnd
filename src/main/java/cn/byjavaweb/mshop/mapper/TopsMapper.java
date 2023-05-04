@@ -12,4 +12,7 @@ import java.util.List;
 public interface TopsMapper  extends BaseMapper<Tops> {
     @Select("select * from tops where type=#{type} order by id desc limit #{begin}, #{size}")
     List<Tops> getList(@Param("type")int type, @Param("begin")int begin, @Param("size")int size);
+
+    @Select("select * from tops where type=#{type}")
+    List<Tops> getAll(@Param("type")int type);
 }

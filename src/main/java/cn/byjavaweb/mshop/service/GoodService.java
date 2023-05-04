@@ -20,4 +20,14 @@ public class GoodService {
     public List<Goods> getList(int type, int page, int size){
         return goodsMapper.getList(type, (page-1)*size, size);
     }
+
+    public List<Goods> getAll(){
+        return goodsMapper.getAll();
+    }
+
+    public boolean delete(int id){
+        return goodsMapper.deleteById(id) > 0;
+    }
+
+    public boolean update(Goods goods){return  goodsMapper.updateById(goods) > 0;}
 }
