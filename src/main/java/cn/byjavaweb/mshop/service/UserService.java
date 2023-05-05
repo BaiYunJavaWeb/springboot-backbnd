@@ -35,7 +35,7 @@ public class UserService {
     public boolean update(Users users){return  usersMapper.updateById(users) > 0;}
 
     public boolean resetPsw(Users users){
-        users.setPassword("123456");
+        users.setPassword("HAMVRZRssPCADKqGjGWJtQ==");
         return usersMapper.updateById(users) > 0;
     }
 }
