@@ -7,11 +7,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class ItemService {
     private final ItemsMapper itemsMapper;
-    public ItemService(ItemsMapper itemsMapper){
+
+    public ItemService(ItemsMapper itemsMapper) {
         this.itemsMapper = itemsMapper;
     }
 
-    public Items getByOrderID(int orderId){
+    public Items getByOrderID(int orderId) {
         return itemsMapper.getByOrderID(orderId);
+    }
+
+    public boolean addItem(Items items) {
+        return itemsMapper.insert(items) > 0;
     }
 }

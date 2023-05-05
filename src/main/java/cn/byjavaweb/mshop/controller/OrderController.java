@@ -1,6 +1,7 @@
 package cn.byjavaweb.mshop.controller;
 
-import cn.byjavaweb.mshop.dto.OrderDto;
+import cn.byjavaweb.mshop.dto.OrderAddDto;
+import cn.byjavaweb.mshop.dto.OrderMergeDto;
 import cn.byjavaweb.mshop.entity.Goods;
 import cn.byjavaweb.mshop.entity.Items;
 import cn.byjavaweb.mshop.entity.Orders;
@@ -35,41 +36,40 @@ public class OrderController {
 	public static final byte STATUS_SEND = 3;
 	/** 订单状态 - 已完成 */
 	public static final byte STATUS_FINISH = 4;
-	
-	public OrderController(OrderService service, ItemService itemService,GoodService goodService)
-	{
+
+	public OrderController(OrderService service, ItemService itemService, GoodService goodService) {
 		this.service = service;
 		this.itemService = itemService;
 		this.goodService = goodService;
 	}
-	
+
 	/**
 	 * 查询订单列表
-	 * @param page 页码
+	 * 
+	 * @param page   页码
 	 * @param status 1：未付款 2：已付款 3：配送中 4：已完成
 	 * @return Orders[]
 	 */
 	@GetMapping("/orderList/{status}/{page}")
 	public ResponseEntity<String> orderList(
 			@PathVariable(name = "page", required = false) int page,
-			@PathVariable(name = "status") int status
-	) {
+			@PathVariable(name = "status") int status) {
 		return new ResponseUtil().response(
 				service.getListOfStatus(
-					status,
-					(page - 1) * RowsPerPage,
-					RowsPerPage),
+						status,
+						(page - 1) * RowsPerPage,
+						RowsPerPage),
 				HttpStatus.OK);
 	}
 
 	@GetMapping("/orderList")
 	public ResponseEntity<String> orderList() {
 		List<Orders> ordersList = service.getAll();
-		List<OrderDto> orderDtos = ordersList.stream()
+		List<OrderMergeDto> orderDtos = ordersList.stream()
 				.map(order -> {
 					Items items = itemService.getByOrderID(order.getId());
 					Goods goods = goodService.get(items.getGoodId());
-					return new OrderDto(
+					return new OrderMergeDto(
 							order.getId(),
 							order.getTotal(),
 							order.getAmount(),
@@ -80,15 +80,15 @@ public class OrderController {
 							order.getAddress(),
 							order.getSystime(),
 							order.getUserId(),
-							goods.getName()
-					);
+							goods.getName());
 				})
 				.collect(Collectors.toList());
 		return new ResponseUtil().response(orderDtos, HttpStatus.OK);
 	}
-	
+
 	/**
 	 * 订单状态修改
+	 * 
 	 * @return {success: boolean}
 	 */
 	@PutMapping("/orderStatus")
@@ -99,16 +99,16 @@ public class OrderController {
 		rsp.put("success", service.update(orders1));
 		return new ResponseUtil().response(rsp, HttpStatus.OK);
 	}
-	
+
 	/**
 	 * 删除订单
+	 * 
 	 * @param id 订单id
 	 * @return {success: true}
 	 */
 	@PostMapping("/orderDelete/{id}")
 	public ResponseEntity<String> orderDelete(
-			@PathVariable(name = "id") int id
-	) {
+			@PathVariable(name = "id") int id) {
 		service.delete(id);
 		var rsp = new HashMap<String, Object>();
 		rsp.put("success", true);
@@ -118,11 +118,11 @@ public class OrderController {
 	@PostMapping("/orders")
 	public ResponseEntity<String> getUserOrder(@RequestBody Users users) {
 		List<Orders> ordersList = service.findOrdersByUID(users.getId());
-		List<OrderDto> orderDtos = ordersList.stream()
+		List<OrderMergeDto> orderDtos = ordersList.stream()
 				.map(order -> {
 					Items items = itemService.getByOrderID(order.getId());
 					Goods goods = goodService.get(items.getGoodId());
-					return new OrderDto(
+					return new OrderMergeDto(
 							order.getId(),
 							order.getTotal(),
 							order.getAmount(),
@@ -133,21 +133,36 @@ public class OrderController {
 							order.getAddress(),
 							order.getSystime(),
 							order.getUserId(),
-							goods.getName()
-					);
+							goods.getName());
 				})
 				.collect(Collectors.toList());
 		return new ResponseUtil().response(orderDtos, HttpStatus.OK);
 	}
 
 	@PostMapping("/pay")
-	public ResponseEntity<String> userPay(@RequestBody Orders orders){
+	public ResponseEntity<String> userPay(@RequestBody Orders orders) {
 		Map<String, Object> msgMap = new HashMap<>();
 		Orders orders1 = service.getByID(orders);
 		// 1: 支付宝 2: 微信 3: 货到付款
 		orders1.setPaytype(orders.getPaytype());
 		orders1.setStatus(STATUS_PAYED);
-		msgMap.put("success",service.update(orders1));
+		msgMap.put("success", service.update(orders1));
 		return new ResponseUtil().response(msgMap, HttpStatus.OK);
+	}
+
+	@PostMapping("/add")
+	public ResponseEntity<String> orderAdd(@RequestBody List<OrderAddDto> orderList) {
+		for (OrderAddDto orderAddDto : orderList) {
+			int order_id = service.add(orderAddDto);
+			Items items = new Items();
+			items.setAmount(orderAddDto.getAmount());
+			items.setGoodId(orderAddDto.getGoodId());
+			items.setOrderId(order_id);
+			items.setPrice(orderAddDto.getTotal());
+			itemService.addItem(items);
+		}
+		var rsp = new HashMap<String, Object>();
+		rsp.put("success", true);
+		return new ResponseUtil().response(rsp, HttpStatus.OK);
 	}
 }

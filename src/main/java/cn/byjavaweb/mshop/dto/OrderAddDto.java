@@ -1,32 +1,32 @@
 package cn.byjavaweb.mshop.dto;
 
-import java.util.Date;
-
-public class OrderDto {
+public class OrderAddDto {
     private Integer id;
+    // 总价格
     private Integer total;
+    // 总量
     private Integer amount;
-    private Byte status;
-    private Byte paytype;
+    // 收货人
     private String name;
+    // 联系方式
     private String phone;
+    // 收货地址
     private String address;
-    private Date systime;
+    // 用户ID
     private Integer userId;
-    private String goodName;
+    // 商品ID
+    private Integer goodId;
 
-    public OrderDto(Integer id, Integer total, Integer amount, Byte status, Byte paytype, String name, String phone, String address, Date systime, Integer userId, String goodName) {
+    public OrderAddDto(Integer id, Integer total, Integer amount, String name, String phone, String address,
+            Integer userId, Integer goodId) {
         this.id = id;
         this.total = total;
         this.amount = amount;
-        this.status = status;
-        this.paytype = paytype;
         this.name = name;
         this.phone = phone;
         this.address = address;
-        this.systime = systime;
         this.userId = userId;
-        this.goodName = goodName;
+        this.goodId = goodId;
     }
 
     public Integer getId() {
@@ -53,22 +53,6 @@ public class OrderDto {
         this.amount = amount;
     }
 
-    public Byte getStatus() {
-        return status;
-    }
-
-    public void setStatus(Byte status) {
-        this.status = status;
-    }
-
-    public Byte getPaytype() {
-        return paytype;
-    }
-
-    public void setPaytype(Byte paytype) {
-        this.paytype = paytype;
-    }
-
     public String getName() {
         return name;
     }
@@ -93,14 +77,6 @@ public class OrderDto {
         this.address = address;
     }
 
-    public Date getSystime() {
-        return systime;
-    }
-
-    public void setSystime(Date systime) {
-        this.systime = systime;
-    }
-
     public Integer getUserId() {
         return userId;
     }
@@ -109,11 +85,12 @@ public class OrderDto {
         this.userId = userId;
     }
 
-    public String getGoodName() {
-        return goodName;
+    public Integer getGoodId() {
+        return goodId;
     }
 
-    public void setGoodName(String goodName) {
-        this.goodName = goodName;
+    public void setGoodId(Integer goodId) {
+        this.goodId = goodId;
     }
+
 }
