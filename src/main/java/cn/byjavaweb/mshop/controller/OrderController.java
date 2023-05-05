@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController()
@@ -25,6 +26,15 @@ public class OrderController {
 	private final OrderService service;
 	private final ItemService itemService;
 	private final GoodService goodService;
+
+	/** 订单状态 - 未付款 */
+	public static final byte STATUS_UNPAY = 1;
+	/** 订单状态 - 已付款 */
+	public static final byte STATUS_PAYED = 2;
+	/** 订单状态 - 配送中 */
+	public static final byte STATUS_SEND = 3;
+	/** 订单状态 - 已完成 */
+	public static final byte STATUS_FINISH = 4;
 	
 	public OrderController(OrderService service, ItemService itemService,GoodService goodService)
 	{
@@ -120,5 +130,18 @@ public class OrderController {
 				})
 				.collect(Collectors.toList());
 		return new ResponseUtil().response(orderDtos, HttpStatus.OK);
+	}
+
+
+
+	@PostMapping("/pay")
+	public ResponseEntity<String> userPay(@RequestBody Orders orders){
+		Map<String, Object> msgMap = new HashMap<>();
+		Orders orders1 = service.getByID(orders);
+		// 1: 支付宝 2: 微信 3: 货到付款
+		orders1.setPaytype(orders.getPaytype());
+		orders1.setStatus(STATUS_PAYED);
+		msgMap.put("success",service.update(orders1));
+		return new ResponseUtil().response(msgMap, HttpStatus.OK);
 	}
 }

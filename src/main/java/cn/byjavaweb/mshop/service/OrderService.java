@@ -34,4 +34,12 @@ public class OrderService {
 	public List<Orders> findOrdersByUID(int userid){
 		return mapper.selectByUID(userid);
 	}
+
+	public boolean update(Orders orders){
+		return mapper.updateById(orders) > 0;
+	}
+
+	public Orders getByID(Orders orders){
+		return mapper.selectById(orders.getId());
+	}
 }
