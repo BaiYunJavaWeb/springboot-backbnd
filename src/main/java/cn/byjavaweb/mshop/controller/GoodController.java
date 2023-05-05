@@ -4,10 +4,13 @@ import cn.byjavaweb.mshop.entity.Goods;
 import cn.byjavaweb.mshop.service.GoodService;
 import cn.byjavaweb.mshop.service.TopService;
 import cn.byjavaweb.mshop.utils.ResponseUtil;
+import cn.byjavaweb.mshop.utils.UploadUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,5 +70,17 @@ public class GoodController {
         Map<String, Object> msgMap = new HashMap<>();
         msgMap.put("success",goodService.update(goods));
         return new ResponseUtil().response(msgMap,HttpStatus.OK);
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<String> add(@RequestBody Goods goods){
+        Map<String, Object> msgMap = new HashMap<>();
+        msgMap.put("success",goodService.add(goods));
+        return new ResponseUtil().response(msgMap,HttpStatus.OK);
+    }
+
+    @PostMapping("/fileUpload")
+    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) throws FileNotFoundException {
+        return new ResponseUtil().response(new UploadUtil().saveFile(file),HttpStatus.OK);
     }
 }

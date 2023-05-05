@@ -30,4 +30,6 @@ public class GoodService {
     }
 
     public boolean update(Goods goods){return  goodsMapper.updateById(goods) > 0;}
+
+    public boolean add(Goods goods){return goodsMapper.insert(goods) >0 ;}
 }
