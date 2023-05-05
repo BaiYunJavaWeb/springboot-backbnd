@@ -1,7 +1,12 @@
 package cn.byjavaweb.mshop.controller;
 
+import cn.byjavaweb.mshop.dto.OrderDto;
+import cn.byjavaweb.mshop.entity.Goods;
+import cn.byjavaweb.mshop.entity.Items;
 import cn.byjavaweb.mshop.entity.Orders;
 import cn.byjavaweb.mshop.entity.Users;
+import cn.byjavaweb.mshop.service.GoodService;
+import cn.byjavaweb.mshop.service.ItemService;
 import cn.byjavaweb.mshop.service.OrderService;
 import cn.byjavaweb.mshop.utils.ResponseUtil;
 import org.springframework.http.HttpStatus;
@@ -10,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController()
 @CrossOrigin
@@ -17,10 +23,14 @@ import java.util.List;
 public class OrderController {
 	private static final int RowsPerPage = 10;
 	private final OrderService service;
+	private final ItemService itemService;
+	private final GoodService goodService;
 	
-	public OrderController(OrderService service)
+	public OrderController(OrderService service, ItemService itemService,GoodService goodService)
 	{
 		this.service = service;
+		this.itemService = itemService;
+		this.goodService = goodService;
 	}
 	
 	/**
@@ -88,8 +98,27 @@ public class OrderController {
 	}
 
 	@PostMapping("/orders")
-	public ResponseEntity<String> GetUserOrder(@RequestBody Users users){
-		List<Orders> ordersList =  service.findOrdersByUID(users.getId());
-		return new ResponseUtil().response(ordersList, HttpStatus.OK);
+	public ResponseEntity<String> getUserOrder(@RequestBody Users users) {
+		List<Orders> ordersList = service.findOrdersByUID(users.getId());
+		List<OrderDto> orderDtos = ordersList.stream()
+				.map(order -> {
+					Items items = itemService.getByOrderID(order.getId());
+					Goods goods = goodService.get(items.getGoodId());
+					return new OrderDto(
+							order.getId(),
+							order.getTotal(),
+							order.getAmount(),
+							order.getStatus(),
+							order.getPaytype(),
+							order.getName(),
+							order.getPhone(),
+							order.getAddress(),
+							order.getSystime(),
+							order.getUserId(),
+							goods.getName()
+					);
+				})
+				.collect(Collectors.toList());
+		return new ResponseUtil().response(orderDtos, HttpStatus.OK);
 	}
 }
