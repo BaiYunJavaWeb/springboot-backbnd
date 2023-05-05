@@ -27,7 +27,7 @@ public class AdminService {
         QueryWrapper<Admins> wrapper = new QueryWrapper<>();
         wrapper.eq("username",admins.getUsername()).select("old_password");
         Admins adminsOne = adminsMapper.selectOne(wrapper);
-        return adminsOne != null && adminsOne.getOldPassword().equals(admins.getPassword());
+        return adminsOne != null && adminsOne.getOldPassword().equals(admins.getOldPassword());
     }
 
     /**

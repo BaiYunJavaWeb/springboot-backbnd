@@ -74,16 +74,16 @@ public class AdminController {
         // 原始密码检查
         if(adminService.checkAdmin(admin)){
             // 设置新密码
-            admin.setPassword(admin.getPassword());
-            adminService.update(admin);
-            msgMap.put("admin",admin);
-            msgMap.put("status","修改成功!");
+            Admins admins1 = adminService.getByUserName(admin.getUsername());
+            admins1.setOldPassword(admins1.getPassword());
+            admins1.setPassword(admin.getPassword());
+            adminService.update(admins1);
+            msgMap.put("success",true);
+            return new ResponseUtil().response(msgMap,HttpStatus.OK);
         }else {
-            msgMap.put("status","原密码错误!");
+            msgMap.put("success",false);
+            return new ResponseUtil().response(msgMap,HttpStatus.UNAUTHORIZED);
         }
-        // 返回管理员重置
-        // return "/admin/admin_reset.jsp";
-        return new ResponseUtil().response(msgMap,HttpStatus.OK);
     }
 
     /**
