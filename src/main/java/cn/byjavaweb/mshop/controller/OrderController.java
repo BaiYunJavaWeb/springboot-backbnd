@@ -4,12 +4,12 @@ import cn.byjavaweb.mshop.service.OrderService;
 import cn.byjavaweb.mshop.utils.ResponseUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
 @RestController()
+@CrossOrigin
 @RequestMapping("/order")
 public class OrderController {
 	private static final int RowsPerPage = 10;
