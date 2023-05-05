@@ -1,5 +1,7 @@
 package cn.byjavaweb.mshop.controller;
 
+import cn.byjavaweb.mshop.entity.Orders;
+import cn.byjavaweb.mshop.entity.Users;
 import cn.byjavaweb.mshop.service.OrderService;
 import cn.byjavaweb.mshop.utils.ResponseUtil;
 import org.springframework.http.HttpStatus;
@@ -7,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 @RestController()
 @CrossOrigin
@@ -82,5 +85,11 @@ public class OrderController {
 		var rsp = new HashMap<String, Object>();
 		rsp.put("success", true);
 		return new ResponseUtil().response(rsp, HttpStatus.OK);
+	}
+
+	@PostMapping("/orders")
+	public ResponseEntity<String> GetUserOrder(@RequestBody Users users){
+		List<Orders> ordersList =  service.findOrdersByUID(users.getId());
+		return new ResponseUtil().response(ordersList, HttpStatus.OK);
 	}
 }

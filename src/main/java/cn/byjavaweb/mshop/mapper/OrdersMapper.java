@@ -19,4 +19,7 @@ public interface OrdersMapper extends BaseMapper<Orders> {
 	
 	@Update("UPDATE `orders` SET `status`=4 WHERE id=#{id}")
 	void finish(int id);
+
+	@Select("select * from orders where user_id=#{userid}")
+	List<Orders> selectByUID(int userid);
 }

@@ -30,4 +30,8 @@ public class OrderService {
 	public void delete(int id) {
 		mapper.deleteById(id);
 	}
+
+	public List<Orders> findOrdersByUID(int userid){
+		return mapper.selectByUID(userid);
+	}
 }
