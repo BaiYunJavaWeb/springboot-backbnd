@@ -3,7 +3,6 @@ package cn.byjavaweb.mshop.service;
 import cn.byjavaweb.mshop.entity.Goods;
 import cn.byjavaweb.mshop.entity.Tops;
 import cn.byjavaweb.mshop.mapper.TopsMapper;
-import net.sf.jsqlparser.statement.select.Top;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -53,5 +52,9 @@ public class TopService {
             }
         }
         return topsMapper.deleteById(currentId) > 0;
+    }
+
+    public void cleanBanner(){
+        topsMapper.cleanBanner();
     }
 }

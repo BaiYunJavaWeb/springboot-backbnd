@@ -15,4 +15,7 @@ public interface TopsMapper  extends BaseMapper<Tops> {
 
     @Select("select * from tops where type=#{type}")
     List<Tops> getAll(@Param("type")int type);
+
+    @Select("delete from tops where type=1")
+    void cleanBanner();
 }

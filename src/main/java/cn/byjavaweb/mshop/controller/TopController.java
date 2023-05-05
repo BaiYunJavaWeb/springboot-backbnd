@@ -31,6 +31,9 @@ public class TopController {
      */
     @PostMapping("/topSave")
     public ResponseEntity<String> topSave(@RequestBody Tops tops) {
+        if(tops.getType()==1){
+         topService.cleanBanner();
+        }
         Map<String, Object> msgMap = new HashMap<>();
         msgMap.put("success",topService.add(tops));
         return new ResponseUtil().response(msgMap,HttpStatus.OK);
