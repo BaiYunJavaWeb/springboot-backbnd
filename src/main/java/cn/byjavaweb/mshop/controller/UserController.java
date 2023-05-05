@@ -67,83 +67,44 @@ public class UserController {
         msgMap.put("success",userService.resetPsw(users));
         return new ResponseUtil().response(msgMap,HttpStatus.OK);
     }
-//
-//    /**
-//     * 顾客添加
-//     *
-//     * @return
-//     */
-//    @RequestMapping("/userSave")
-//    public String userSave(Users user, HttpServletRequest request,
-//                           @RequestParam(required=false, defaultValue="1") int page) {
-//        if (userService.isExist(user.getUsername())) {
-//            request.setAttribute("msg", "用户名已存在!");
-//            return "/admin/user_add.jsp";
-//        }
-//        userService.add(user);
-//        return "redirect:userList?flag=2&page="+page;
-//    }
-//
-//    /**
-//     * 顾客密码重置页面
-//     *
-//     * @return
-//     */
-//    @RequestMapping("/userRe")
-//    public String userRe(int id, HttpServletRequest request) {
-//        request.setAttribute("flag", 2);
-//        request.setAttribute("user", userService.get(id));
-//        return "/admin/user_reset.jsp";
-//    }
-//
-//    /**
-//     * 顾客密码重置
-//     *
-//     * @return
-//     */
-//    @RequestMapping("/userReset")
-//    public String userReset(Users user,
-//                            @RequestParam(required=false, defaultValue="1") int page) {
-//        String password = SafeUtil.encode(user.getPassword());
-//        user = userService.get(user.getId());
-//        user.setPassword(password);
-//        userService.update(user);
-//        return "redirect:userList?flag=2&page="+page;
-//    }
-//
-//    /**
-//     * 顾客更新
-//     *
-//     * @return
-//     */
-//    @RequestMapping("/userEdit")
-//    public String userEdit(int id, HttpServletRequest request) {
-//        request.setAttribute("flag", 2);
-//        request.setAttribute("user", userService.get(id));
-//        return "/admin/user_edit.jsp";
-//    }
-//
-//    /**
-//     * 顾客更新
-//     *
-//     * @return
-//     */
-//    @RequestMapping("/userUpdate")
-//    public String userUpdate(Users user,
-//                             @RequestParam(required=false, defaultValue="1") int page) {
-//        userService.update(user);
-//        return "redirect:userList?flag=2&page="+page;
-//    }
-//
-//    /**
-//     * 顾客删除
-//     *
-//     * @return
-//     */
-//    @RequestMapping("/userDelete")
-//    public String userDelete(Users user,
-//                             @RequestParam(required=false, defaultValue="1") int page) {
-//        userService.delete(user);
-//        return "redirect:userList?flag=2&page="+page;
-//    }
+
+    @GetMapping("/{name}")
+    public ResponseEntity<String> findUser(@PathVariable(name = "name") String name){
+        Map<String, Object> msgMap = new HashMap<>();
+        Users users = userService.findUserByName(name);
+        msgMap.put("id",users.getId());
+        msgMap.put("username",users.getUsername());
+        msgMap.put("name",users.getName());
+        msgMap.put("phone",users.getPhone());
+        msgMap.put("address",users.getAddress());
+        return new ResponseUtil().response(msgMap,HttpStatus.OK);
+    }
+
+    @PutMapping("/updateInfo")
+    public ResponseEntity<String> updateInfo(@RequestBody Users users){
+        Map<String, Object> msgMap = new HashMap<>();
+        Users users1 = userService.findUserById(users);
+        users1.setName(users.getName());
+        users1.setPhone(users.getPhone());
+        users1.setAddress(users.getAddress());
+        userService.update(users1);
+        msgMap.put("success",true);
+        return new ResponseUtil().response(msgMap,HttpStatus.OK);
+    }
+
+    @PutMapping("/updatePsw")
+    public ResponseEntity<String> updatePsw(@RequestBody Users users){
+        Map<String, Object> msgMap = new HashMap<>();
+        Users users1 = userService.findUserById(users);
+        // 此处username为用户原始密码
+        if(users1.getPassword().equals(users.getUsername())){
+            users1.setPassword(users.getPassword());
+            userService.update(users1);
+            msgMap.put("success",true);
+            return new ResponseUtil().response(msgMap,HttpStatus.OK);
+        }else{
+            msgMap.put("success",false);
+            return new ResponseUtil().response(msgMap,HttpStatus.BAD_REQUEST);
+        }
+    }
 }

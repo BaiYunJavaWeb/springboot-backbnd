@@ -38,4 +38,12 @@ public class UserService {
         users.setPassword("HAMVRZRssPCADKqGjGWJtQ==");
         return usersMapper.updateById(users) > 0;
     }
+
+    public Users findUserByName(String name){
+        return usersMapper.findByUsername(name);
+    }
+
+    public Users findUserById(Users users){
+        return usersMapper.selectById(users.getId());
+    }
 }
