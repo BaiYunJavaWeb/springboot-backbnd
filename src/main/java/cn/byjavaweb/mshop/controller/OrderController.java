@@ -61,34 +61,42 @@ public class OrderController {
 					RowsPerPage),
 				HttpStatus.OK);
 	}
-	
-	/**
-	 * 订单发货
-	 * @param id 订单id
-	 * @return {success: true}
-	 */
-	@PostMapping("/orderDispose/{id}")
-	public ResponseEntity<String> orderDispose(
-			@PathVariable(name = "id") int id
-	) {
-		service.dispose(id);
-		var rsp = new HashMap<String, Object>();
-		rsp.put("success", true);
-		return new ResponseUtil().response(rsp, HttpStatus.OK);
+
+	@GetMapping("/orderList")
+	public ResponseEntity<String> orderList() {
+		List<Orders> ordersList = service.getAll();
+		List<OrderDto> orderDtos = ordersList.stream()
+				.map(order -> {
+					Items items = itemService.getByOrderID(order.getId());
+					Goods goods = goodService.get(items.getGoodId());
+					return new OrderDto(
+							order.getId(),
+							order.getTotal(),
+							order.getAmount(),
+							order.getStatus(),
+							order.getPaytype(),
+							order.getName(),
+							order.getPhone(),
+							order.getAddress(),
+							order.getSystime(),
+							order.getUserId(),
+							goods.getName()
+					);
+				})
+				.collect(Collectors.toList());
+		return new ResponseUtil().response(orderDtos, HttpStatus.OK);
 	}
 	
 	/**
-	 * 订单完成
-	 * @param id 订单id
-	 * @return {success: true}
+	 * 订单状态修改
+	 * @return {success: boolean}
 	 */
-	@PostMapping("/orderFinish/{id}")
-	public ResponseEntity<String> orderFinish(
-			@PathVariable(name = "id") int id
-	) {
-		service.finish(id);
+	@PutMapping("/orderStatus")
+	public ResponseEntity<String> orderStatus(@RequestBody Orders orders) {
+		Orders orders1 = service.getByID(orders);
+		orders1.setStatus(orders.getStatus());
 		var rsp = new HashMap<String, Object>();
-		rsp.put("success", true);
+		rsp.put("success", service.update(orders1));
 		return new ResponseUtil().response(rsp, HttpStatus.OK);
 	}
 	
@@ -131,8 +139,6 @@ public class OrderController {
 				.collect(Collectors.toList());
 		return new ResponseUtil().response(orderDtos, HttpStatus.OK);
 	}
-
-
 
 	@PostMapping("/pay")
 	public ResponseEntity<String> userPay(@RequestBody Orders orders){

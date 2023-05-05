@@ -18,6 +18,10 @@ public class OrderService {
 	public List<Orders> getListOfStatus(int status, int start, int limit) {
 		return mapper.getListOfStatus(status, start, limit);
 	}
+
+	public List<Orders> getAll(){
+		return mapper.getAll();
+	}
 	
 	public void dispose(int id) {
 		mapper.dispose(id);

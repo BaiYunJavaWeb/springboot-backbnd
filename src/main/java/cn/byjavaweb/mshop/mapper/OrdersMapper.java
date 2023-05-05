@@ -13,6 +13,9 @@ public interface OrdersMapper extends BaseMapper<Orders> {
 	
 	@Select("SELECT * FROM `orders` WHERE `status`=${status} ORDER BY id DESC LIMIT #{start}, ${limit}")
 	List<Orders> getListOfStatus(int statis, int start, int limit);
+
+	@Select("select * from orders")
+	List<Orders> getAll();
 	
 	@Update("UPDATE `orders` SET `status`=3 WHERE id=#{id}")
 	void dispose(int id);
