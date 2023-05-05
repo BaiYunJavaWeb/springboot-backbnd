@@ -1,9 +1,11 @@
 package cn.byjavaweb.mshop.service;
 
+import cn.byjavaweb.mshop.entity.Goods;
 import cn.byjavaweb.mshop.entity.Users;
 import cn.byjavaweb.mshop.mapper.UsersMapper;
-import cn.byjavaweb.mshop.utils.SafeUtil;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -20,5 +22,20 @@ public class UserService {
 
     public Users checkUser(Users users){
         return usersMapper.findByUsername(users.getUsername());
+    }
+
+    public List<Users> all(){
+        return usersMapper.getAll();
+    }
+
+    public boolean delete(int id){
+        return usersMapper.deleteById(id) > 0;
+    }
+
+    public boolean update(Users users){return  usersMapper.updateById(users) > 0;}
+
+    public boolean resetPsw(Users users){
+        users.setPassword("123456");
+        return usersMapper.updateById(users) > 0;
     }
 }

@@ -3,10 +3,12 @@ package cn.byjavaweb.mshop.controller;
 import cn.byjavaweb.mshop.entity.Users;
 import cn.byjavaweb.mshop.service.UserService;
 import cn.byjavaweb.mshop.utils.ResponseUtil;
-import cn.byjavaweb.mshop.utils.SafeUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -38,6 +40,32 @@ public class UserController {
         }else {
             return new ResponseUtil().response("登录成功!", HttpStatus.OK);
         }
+    }
+
+    @GetMapping("/userList")
+    public ResponseEntity<String> all(){
+        return new ResponseUtil().response(userService.all(),HttpStatus.OK);
+    }
+
+    @DeleteMapping("/userDelete")
+    public ResponseEntity<String> goodDelete(@RequestBody Users users){
+        Map<String, Object> msgMap = new HashMap<>();
+        msgMap.put("success",userService.delete(users.getId()));
+        return new ResponseUtil().response(msgMap,HttpStatus.OK);
+    }
+
+    @PutMapping("/userUpdate")
+    public ResponseEntity<String> userUpdate(@RequestBody Users users){
+        Map<String, Object> msgMap = new HashMap<>();
+        msgMap.put("success",userService.update(users));
+        return new ResponseUtil().response(msgMap,HttpStatus.OK);
+    }
+
+    @PostMapping("/reset")
+    public ResponseEntity<String> userReset(@RequestBody Users users){
+        Map<String, Object> msgMap = new HashMap<>();
+        msgMap.put("success",userService.resetPsw(users));
+        return new ResponseUtil().response(msgMap,HttpStatus.OK);
     }
 //
 //    /**
