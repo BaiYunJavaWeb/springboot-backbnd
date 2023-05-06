@@ -106,12 +106,10 @@ public class OrderController {
 	 * @param id 订单id
 	 * @return {success: true}
 	 */
-	@PostMapping("/orderDelete/{id}")
-	public ResponseEntity<String> orderDelete(
-			@PathVariable(name = "id") int id) {
-		service.delete(id);
+	@DeleteMapping("/orderDelete")
+	public ResponseEntity<String> orderDelete(@RequestBody Orders order) {
 		var rsp = new HashMap<String, Object>();
-		rsp.put("success", true);
+		rsp.put("success", service.delete(order.getId()));
 		return new ResponseUtil().response(rsp, HttpStatus.OK);
 	}
 

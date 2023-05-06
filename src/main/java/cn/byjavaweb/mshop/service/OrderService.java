@@ -31,8 +31,8 @@ public class OrderService {
 		mapper.finish(id);
 	}
 
-	public void delete(int id) {
-		mapper.deleteById(id);
+	public boolean delete(int id) {
+		return mapper.deleteById(id) > 0;
 	}
 
 	public List<Orders> findOrdersByUID(int userid) {
