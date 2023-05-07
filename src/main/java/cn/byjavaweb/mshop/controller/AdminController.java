@@ -21,7 +21,7 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    public AdminController(AdminService adminService){
+    public AdminController(AdminService adminService) {
         this.adminService = adminService;
     }
 
@@ -30,15 +30,15 @@ public class AdminController {
      */
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody Admins admin, HttpSession session) {
-        if(adminService.checkAdmin(admin)){
+        if (adminService.checkAdmin(admin)) {
             session.setAttribute("username", admin.getUsername());
             // 登录成功
             // return "redirect:index";
-            return new ResponseUtil().response("登录成功!",HttpStatus.OK);
+            return new ResponseUtil().response("登录成功!", HttpStatus.OK);
         }
         // 登录失败
         // return "/admin/login.jsp";
-        return new ResponseUtil().response("用户名或密码错误!",HttpStatus.UNAUTHORIZED);
+        return new ResponseUtil().response("用户名或密码错误!", HttpStatus.UNAUTHORIZED);
     }
 
     /**
@@ -49,7 +49,7 @@ public class AdminController {
         session.removeAttribute("admin");
         // 退出登录
         // return "/admin/login.jsp";
-        return new ResponseUtil().response("退出成功",HttpStatus.OK);
+        return new ResponseUtil().response("退出成功", HttpStatus.OK);
     }
 
     /**
@@ -58,10 +58,10 @@ public class AdminController {
     @GetMapping("/admins/{page}")
     public ResponseEntity<String> getAdminList(@PathVariable(name = "page") int page) {
         Map<String, Object> msgMap = new HashMap<>();
-        msgMap.put("adminList",adminService.getList(page, rows));
+        msgMap.put("adminList", adminService.getList(page, rows));
         // 返回管理员列表
         // return "/admin/admin_list.jsp";
-        return new ResponseUtil().response(msgMap,HttpStatus.OK);
+        return new ResponseUtil().response(msgMap, HttpStatus.OK);
     }
 
     /**
@@ -72,17 +72,17 @@ public class AdminController {
         Map<String, Object> msgMap = new HashMap<>();
         // 前端加密密码后传输比对
         // 原始密码检查
-        if(adminService.checkAdmin(admin)){
+        if (adminService.checkAdmin(admin)) {
             // 设置新密码
             Admins admins1 = adminService.getByUserName(admin.getUsername());
             admins1.setOldPassword(admins1.getPassword());
             admins1.setPassword(admin.getPassword());
             adminService.update(admins1);
-            msgMap.put("success",true);
-            return new ResponseUtil().response(msgMap,HttpStatus.OK);
-        }else {
-            msgMap.put("success",false);
-            return new ResponseUtil().response(msgMap,HttpStatus.UNAUTHORIZED);
+            msgMap.put("success", true);
+            return new ResponseUtil().response(msgMap, HttpStatus.OK);
+        } else {
+            msgMap.put("success", false);
+            return new ResponseUtil().response(msgMap, HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -92,17 +92,17 @@ public class AdminController {
     @RequestMapping("/adminSave")
     public ResponseEntity<String> adminSave(Admins admin) {
         Map<String, Object> msgMap = new HashMap<>();
-        if (adminService.getByUserName(admin.getUsername())!=null) {
-            msgMap.put("status","用户名已存在!");
+        if (adminService.getByUserName(admin.getUsername()) != null) {
+            msgMap.put("status", "用户名已存在!");
             // 返回新增
             // return "/admin/admin_add.jsp";
-            return new ResponseUtil().response(msgMap,HttpStatus.BAD_REQUEST);
+            return new ResponseUtil().response(msgMap, HttpStatus.BAD_REQUEST);
         }
         adminService.add(admin);
-        msgMap.put("status","添加成功!");
+        msgMap.put("status", "添加成功!");
         // 返回管理员页
         // return "redirect:adminList?flag=5&page="+page;
-        return new ResponseUtil().response(msgMap,HttpStatus.OK);
+        return new ResponseUtil().response(msgMap, HttpStatus.OK);
     }
 
     /**
@@ -111,10 +111,10 @@ public class AdminController {
     @RequestMapping("/adminEdit")
     public ResponseEntity<String> adminEdit(int id) {
         Map<String, Object> msgMap = new HashMap<>();
-        msgMap.put("admin",adminService.get(id));
+        msgMap.put("admin", adminService.get(id));
         // 返回 管理员修改
         // return "/admin/admin_edit.jsp";
-        return new ResponseUtil().response(msgMap,HttpStatus.OK);
+        return new ResponseUtil().response(msgMap, HttpStatus.OK);
     }
 
     /**
@@ -125,22 +125,22 @@ public class AdminController {
         Map<String, Object> msgMap = new HashMap<>();
         admin.setPassword(admin.getPassword());
         adminService.update(admin);
-        msgMap.put("flag","更新成功");
+        msgMap.put("flag", "更新成功");
         // return "redirect:adminList?flag=5&page="+page;
-        return new ResponseUtil().response(msgMap,HttpStatus.OK);
+        return new ResponseUtil().response(msgMap, HttpStatus.OK);
     }
 
     /**
      * 管理员删除
      */
     @RequestMapping("/adminDelete")
-    public ResponseEntity<String> adminDelete(Admins admin, @RequestParam(required=false, defaultValue="1") int page) {
-        Map<String, Object> responseMap = new HashMap<>();
+    public ResponseEntity<String> adminDelete(Admins admin,
+            @RequestParam(required = false, defaultValue = "1") int page) {
         Map<String, Object> msgMap = new HashMap<>();
         adminService.delete(admin);
-        msgMap.put("flag","删除成功!");
+        msgMap.put("flag", "删除成功!");
         // 刷新页面
         // return "redirect:adminList?flag=5&page="+page;
-        return new ResponseUtil().response(msgMap,HttpStatus.OK);
+        return new ResponseUtil().response(msgMap, HttpStatus.OK);
     }
 }

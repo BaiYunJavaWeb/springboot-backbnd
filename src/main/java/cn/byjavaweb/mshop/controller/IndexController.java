@@ -16,11 +16,9 @@ import java.util.Map;
 @CrossOrigin
 @RequestMapping("/index")
 public class IndexController {
-    private static final int rows = 16; // 默认每页数量
-
     private final TopService topService;
 
-    public IndexController(TopService topService){
+    public IndexController(TopService topService) {
         this.topService = topService;
     }
 
@@ -28,7 +26,7 @@ public class IndexController {
      * 首页推荐 banner 热销 新品
      */
     @GetMapping("/index")
-    public ResponseEntity<String> index(){
+    public ResponseEntity<String> index() {
         Map<String, Object> msgMap = new HashMap<>();
         msgMap.put("ibanner", topService.getList(1, 1, 1));
         msgMap.put("ihot", topService.getList(2, 1, 6));
