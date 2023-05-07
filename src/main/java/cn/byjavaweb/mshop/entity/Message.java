@@ -1,13 +1,8 @@
 package cn.byjavaweb.mshop.entity;
 
+import lombok.Data;
+
+@Data
 public class Message {
     private Object msg;
-
-    public Object getMsg() {
-        return msg;
-    }
-
-    public void setMsg(Object msg) {
-        this.msg = msg;
-    }
 }
